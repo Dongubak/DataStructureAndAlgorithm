@@ -18,6 +18,8 @@ public:
             return key % nBits;
             case 2:
             return key % nBits;
+            default:
+            return -1;
         }
     }
 
