@@ -15,9 +15,9 @@ public:
             case 0:
             return key % nBits;
             case 1:
-            return key % nBits;
+            return (key / 7 )% nBits;
             case 2:
-            return key % nBits;
+            return (key / 11) % nBits;
             default:
             return -1;
         }
