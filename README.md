@@ -21,8 +21,119 @@ ktc동아리 알고리즘 팀 김혁중
 
 
 
+---
+### 🧑‍🏭 이진 검색의 예
 
-### 이진 검색의 예
+**주어진 배열, 찾으려는 값 : 9**
 
-| 1 | 2 | 3 | 4 | *5* | 6 | 7 | 8 | 9 |
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+1️⃣ **주어진 배열에서 중앙값을 찾는다.**
+
+| 1 | 2 | 3 | 4 | <style>p1{color:red;}</style><p1><em>5</em></p1> | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+2️⃣ **중앙값과 찾으려는 값을 비교하여 찾으려는 값이 크다면 범위를 좁혀서 1번을 반복한다.**
+
+| 1 | 2 | 3 | 4 | <style>p1{color:red;}</style><p1><em>5</em></p1> | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+3️⃣ **5에서 8사이의 수 중에서 중앙값을 찾아 9와 비교한다**
+
+| 1 | 2 | 3 | 4 | 5 | <style>p2{color: blue;}></style><p2><em>6</em></p2> | <p1><em>7</em></p1> | <p2><em>8</em></p2> |<p2><em>9</em></p2> |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+4️⃣ **찾으려는 값이 7보다 크므로 8과 9로 범위를 좁혀서 1번을 반복한다**
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | <p1>8</p1> | <p2>9</p2> |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+5️⃣ **8보다 9가 크므로 범위를 좁혀 9부터 9까지의 중앙값과 9를 비교한다**
+
+중앙값이 9이므로 값이 같아 검색을 성공한다.
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | <p2>9</p2> |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+## 👨‍💻 이진탐색 수도코드
+```C++
+BinarySearch(A[0..N-1], value, p, r) {
+  if (p < r)
+    return -1
+  q = (p + r) / 2 // 중간 요소 설정(floor)
+  if (A[q] > value)
+    return BinarySearch(A, value, p, q - 1) //[low, mid)
+  else if (A[q] < value)
+    return BinarySearch(A, value, q + 1, r) // (mid, high)
+  else
+    return q
+}
+```
+
+## 🎱 이진탐색 구현
+```cpp
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <random>
+#include <algorithm>
+#include <ctime>
+
+bool linear_search(int n, std::vector<int>& s) {
+    for(auto i : s) {
+        if(i == n) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+bool binarySearchRecursive(int n, int st, int end, std::vector<int>& s) {
+    if(st > end) {
+        return false;
+    } else {
+        int mid = (st + end) / 2;
+        if(n == s[mid]) {
+            return true;
+        } else if(n < s[mid])  {
+            return binarySearchRecursive(n, st, mid - 1, s);
+        } else {///}(n > s[i])
+            return binarySearchRecursive(n, mid + 1, end, s);
+        }
+    }
+}
+
+bool binarySearch(int N, std::vector<int>& s) {
+    return binarySearchRecursive(N, 0, int(s.size()) - 1, s);
+}
+
+int main(void) {
+    srand(unsigned(time(0)));
+    using namespace std;
+    
+    vector<int> a(100);
+    generate(a.begin(), a.end(), []() {
+        return rand() % 100;
+    });
+    sort(a.begin(), a.end());
+    
+    for(auto i : a) {
+        cout << i << " ";
+    }
+    cout << '\n';
+    cout << binarySearch(10, a);
+    
+    
+    
+    
+    return 0;
+}
+
+```
+### 출력결과
+![Alt text](image.png)
+
