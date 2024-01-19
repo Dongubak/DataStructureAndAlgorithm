@@ -137,3 +137,243 @@ int main(void) {
 ### 출력결과
 ![Alt text](image.png)
 
+## 2️⃣ 분할정복을 이용하여 정렬하기
+효율적인 정렬알고리즘은 매우 중요하다.
+데이터를 정렬해 놓으면 로그 함수 시간복잡도로 저장된 데이터에 접근가능하다.
+이를 분할정복을 이용하여 구현할 것이다.
+
+정렬알고리즘의 요구사항
+
+
+1. 모든 데이터 타입에 대해서 작동해야한다. (서로 다른 구조체를 멤버기준으로 정렬이 가능해야한다.)
+2. 많은 양의 데이터를 처리할 수 있어야한다.
+3. 정렬알고리즘은 점근적 시간복잡도 측면이나 실제 동작시에 빠르게 동작해야한다.
+
+
+---
+
+### 🍔 병합정렬
+병합정렬은 많은 원소로 구성된 전체 집합을 작은 크기의 부분집합으로 나눠 각각을 정렬하고, 정렬된 부분집합을 오름차순 또는 내림차순 순서를 유지하면서 합치는 방식이다.
+
+### 🐬 병합정렬 수도코드
+```cpp
+mergeSort(A[], p, r) {
+    if(p < r) {
+        q <- [(p+r)/2] ///p와 r의 중간 지점 계산
+        mergeSort(A, p, q) ///q기준으로 전반부 정렬
+        mergeSort(A, q + 1, r) ///q기준으로 후반부 정렬
+        merge(A, p, q, r) ///병합
+    }
+}
+
+merge(A[], p, q, r) {
+    정렬된 두 리스트 A[p...q]와 A[q + 1... r]을 합쳐
+    정렬된 하나의 A[p...r]을 만든다.
+}
+```
+
+### ⭐ 병합정렬 예시(수도코드)
+**주어진 배열**
+
+| 2 | 6 | 7 | 3 | 1 | 9 | 5 | 4 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+1️⃣ 중간지점 계산 -> 1, 1을 기준으로 왼쪽 오른쪽 정렬 후 병합
+| 2 | 6 | 7 | 3 | 1 | 9 | 5 | 4 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+| <span style="color:blue">1</span> | <span style="color:blue">2</span> | <span style="color:blue">3</span> | <span style="color:blue">6</span> | <span style="color:blue">7</span> | <span style="color:red"><p>4</p><em></span> | <span style="color:red"><p>5</p><em></span> | <span style="color:red"><p>8</p><em></span> | <span style="color:red"><p>9</p><em></span> |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+2️⃣ 두 배열을 순서대로 병합
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+
+### 🏀 병합정렬 수도코드 구체화
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void merge(int st, int mi, int end, std::vector<int>& v) {
+    std::vector<int> tmp(end - st + 1);
+    int i = st;
+    int j = mi + 1;
+    int t = 0;
+    
+    while(i <= mi && j <= end) {
+        if(v[i] <= v[j]) {
+            tmp[t++] = v[i++];
+        } else {
+            tmp[t++] = v[j++];
+        }
+    }
+    
+    while(i <= mi) {
+        tmp[t++] = v[i++];
+    }
+    
+    while(j <= end) {
+        tmp[t++] = v[j++];
+    }
+    
+    t = 0;
+    for(int i = st; i <= end; i++) {
+        v[i] = tmp[t++];
+    }
+}
+
+void mergeSort(int st, int end, std::vector<int>& v) {
+    if(st < end) {
+        int mid = (st + end) / 2;
+        mergeSort(st, mid, v);
+        mergeSort(mid + 1, end, v);
+        merge(st, mid, end, v);
+    }
+}
+
+
+
+int main(void) {
+    using namespace std;
+    
+    vector<int> v(100);
+    int i = 100;
+    generate(v.begin(), v.end(), [&i]() {
+        return i--;
+    });
+    
+    
+    for(auto a : v) {
+        std::cout << a << " ";
+    }
+    
+    std::cout << '\n';
+    
+    mergeSort(0, int(v.size()) - 1, v);
+    
+    for(auto a : v) {
+        std::cout << a << " ";
+    }
+    
+    return 0;
+}
+
+```
+### 출력
+![Alt text](image-1.png)
+
+### 🏈 병합정렬 예시(실제 코드)
+
+1️⃣ 주어진 배열에서 중간 값 1을 기준으로 분할
+| 2 | 6 | 7 | 3 | 1 | 9 | 5 | 4 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+2️⃣ 왼쪽과 오른쪽에서 중앙값 7과 5를 찾아서 분할한다
+| 2 | 6 | 7 | 3 | 1 |
+| --- | --- | --- | --- | --- |
+
+| 9 | 5 | 4 | 8 |
+| --- | --- | --- | --- |
+
+3️⃣ 중앙값 6과 3, 9, 4를 찾아.
+| 2 | 6 | 7 |
+| --- | --- | --- |
+
+| 3 | 1 |
+| --- | --- |
+
+| 9 | 5 |
+| --- | --- |
+
+| 4 | 8 |
+| --- | --- |
+
+4️⃣  분할 한다.
+| 2 |
+| --- |
+
+
+| 6 | 7 |
+| --- | --- |
+
+| 3 |
+| --- |
+
+| 1 |
+| --- |
+
+| 9 |
+| --- |
+
+| 5 |
+| --- |
+
+| 4 |
+| --- |
+
+| 8 |
+| --- |
+
+5️⃣ 병합을 진행한다
+
+| 2 | 6 | 7 |
+| --- | --- | --- |
+
+| 1 | 3 |
+| --- | --- |
+
+| 5 | 9 |
+| --- | --- |
+
+| 4 | 8 |
+| --- | --- |
+
+6️⃣ 반복
+| 1 | 2 | 3 | 6 | 7 |
+| --- | --- | --- | --- | --- |
+
+| 4 | 5 | 8 | 9 |
+| --- | --- | --- | --- |
+
+7️⃣ 반복
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+---
+### 🪡 병합부분
+
+```cpp
+void merge(int st, int mi, int end, std::vector<int>& v) {
+    std::vector<int> tmp(end - st + 1);
+    int i = st;
+    int j = mi + 1;
+    int t = 0;
+    
+    while(i <= mi && j <= end) {
+        if(v[i] <= v[j]) {
+            tmp[t++] = v[i++];
+        } else {
+            tmp[t++] = v[j++];
+        }
+    }
+    
+    while(i <= mi) {
+        tmp[t++] = v[i++];
+    }
+    
+    while(j <= end) {
+        tmp[t++] = v[j++];
+    }
+    
+    t = 0;
+    for(int i = st; i <= end; i++) {
+        v[i] = tmp[t++];
+    }
+}
+```
+![Alt text](image-2.png)
+
