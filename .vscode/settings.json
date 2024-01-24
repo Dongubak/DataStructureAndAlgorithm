@@ -60,5 +60,6 @@
       "vector": "cpp",
       "algorithm": "cpp",
       "list": "cpp"
-   }
+   },
+   "C_Cpp.default.cppStandard": "c++17",
 }
