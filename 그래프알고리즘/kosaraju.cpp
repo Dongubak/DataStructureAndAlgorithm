@@ -16,36 +16,12 @@ public:
     std::vector<std::list<Edge>> G;
     int size;
 
-    Graph(int s) : size(s + 1) {
-        G.resize(size);
+    Graph(int s) : size(s) {
+        G.resize(s);
     }
 
     void addEdge(int s, int d, int w) {
-        G[s].push_front(Edge(d, w));
-    }
-
-    void DFS_Recursive(int v, std::vector<int>& visited, std::stack<int>& sta) {
-        visited[v] = 1;
-
-        for (auto& a : G[v]) {
-            if (visited[a.dst] == 0) {
-                DFS_Recursive(a.dst, visited, sta);
-            }
-        }
-
-        sta.push(v);
-    }
-
-    std::stack<int> DFS_Basic() {
-        std::stack<int> sta;
-        std::vector<int> visited(size);
-        for (int i = 1; i < size; i++) {
-            if (visited[i] == 0) {
-                DFS_Recursive(i, visited, sta);
-            }
-        }
-
-        return sta;
+        G[s].push_back(Edge(d, w));
     }
 
     Graph transp() {
@@ -55,34 +31,52 @@ public:
                 ret.addEdge(adj.dst, i, adj.weight);
             }
         }
-
         return ret;
     }
 };
 
-void DFS(Graph& g, int v, std::vector<bool>& visited) {
-    visited[v] = true;
-    printf("%d ", v);
+void DFS_Recursive(Graph& g, int v, std::vector<int>& visited, std::stack<int>& st) {
+    visited[v] = 1;
+    for(auto& e: g.G[v]) {
+        if(visited[e.dst] == 0) {
+            DFS_Recursive(g, e.dst, visited, st);
+        }
+    }
+    st.push(v);
+}
 
-    for (auto& adj : g.G[v]) {
-        if (!visited[adj.dst]) {
-            DFS(g, adj.dst, visited);
+void DFS_Recursive(Graph& g, int v, std::vector<int>& visited) {
+    visited[v] = 1;
+    printf("%d\n", v);
+    for(auto& e: g.G[v]) {
+        if(visited[e.dst] == 0) {
+            DFS_Recursive(g, e.dst, visited);
         }
     }
 }
 
-void kosaraju(Graph g) {
-    std::stack<int> sta = g.DFS_Basic();
-    std::vector<bool> visited(g.size, false);
-    while (!sta.empty()) {
-        int v = sta.top();
-        sta.pop();
+std::stack<int> DFS(Graph& g) {
+    std::stack<int> st;
+    std::vector<int> visited(g.size, 0);
+    DFS_Recursive(g, 1, visited, st);
 
-        if (!visited[v]) {
-            printf("강한 연결 요소: ");
-            DFS(g, v, visited);
-            printf("\n");
+    return st;
+}
+
+void DFS(Graph& g, int v) {
+    std::vector<int> visited(g.size, 0);
+    DFS_Recursive(g, v, visited);
+}
+
+void kosaraju(std::stack<int> seq, Graph& tr_g) {
+    std::vector<int> visited(tr_g.size, 0);
+    
+    while(!seq.empty()) {
+        if(visited[seq.top()] == 0) {
+            DFS_Recursive(tr_g, seq.top(), visited);
+            printf("------\n");
         }
+        seq.pop();
     }
 }
 
@@ -92,16 +86,19 @@ int main(void) {
 
     scanf("%d %d", &vn, &en);
 
-    Graph g(vn);
+    Graph g(vn + 1);
 
     int st, dst, weight;
     for (int i = 0; i < en; i++) {
         scanf("%d %d %d", &st, &dst, &weight);
-
         g.addEdge(st, dst, weight);
     }
 
-    kosaraju(g);
+    Graph tr_g = g.transp();
+
+    std::stack<int> seq = DFS(g);
+
+    kosaraju(seq, tr_g);
 
     return 0;
 }
