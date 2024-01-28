@@ -1,0 +1,1 @@
+{"name":"Local: test","url":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/test.cpp","tests":[{"id":1706277685890,"input":"5 2\n4 1 2 3 5","output":"2"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/test.cpp","group":"local","local":true}

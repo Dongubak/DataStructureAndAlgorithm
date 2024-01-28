@@ -11,9 +11,9 @@ private:
    struct Node {
       unsigned int id;
       unsigned int rank;
-      unsigned int parent;
+      unsigned int parent; ///부모에 대한 정보를 저장한다.
 
-      Node(unsigned _id) : id(_id), rank(0), parent(_id) {}
+      Node(unsigned _id) : id(_id), rank(0), parent(_id) {} ///랭크는 0으로 초기화
 
       bool operator != (const Node& n) const {
          return this->id != n.id;
@@ -28,10 +28,10 @@ public:
    }
 
    void make_set(const unsigned& x) {
-      nodes.emplace_back(x);
+      nodes.emplace_back(x); ////????
    }
 
-   unsigned find(unsigned x) {
+   unsigned find(unsigned x) { ///finding node's parent
       auto node_it = find_if(nodes.begin(), nodes.end(), [x](Node n) {
          return n.id == x;
       });
@@ -42,22 +42,22 @@ public:
          node_id = nodes[node_id].parent;
       }
 
-      return node_id;
+      return node_id; ///루트노드의 아이디를 얻어서 반환한다.
    }
 
    void union_sets(unsigned x, unsigned y) {
-      auto root_x = find(x);
-      auto root_y = find(y);
+      auto root_x = find(x); ///x의 루트노드
+      auto root_y = find(y); ///y의 루트노드
 
-      if(root_x == root_y) {
+      if(root_x == root_y) { ///같으면 병합 불가
          return;
       }
 
-      if(nodes[root_x].rank > nodes[root_y].rank) {
+      if(nodes[root_x].rank > nodes[root_y].rank) { ///다르다면 랭크가 큰 루트 노드를 y에 할당함
          swap(root_x, root_y);
       }
-
-      nodes[root_x].parent = nodes[root_y].parent;
+      
+      nodes[root_x].parent = nodes[root_y].parent; ///y가 부모가 되어 x를 y아래로 삽입함
       nodes[root_y].rank++;
    }
 };
