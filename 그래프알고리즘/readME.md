@@ -320,7 +320,7 @@ int main(void) {
 ![Alt text](image-4.png)
 
 ### ☠️ 음수 사이클
-아래 예시에서 A->B 거리는 3이다. 하지만 B->C->B사이클을 거치면 -2가 감소한 1이 되며 한번 더 사이클을 거치면 -1이 되어 거리값이 무한정으로 감소한다. 이를 파악하는 과정은 생각보다 쉽다. V개의 정점이 있을 때 임의의 정점에서 임의의 정점으로 가장 많이 거쳐 가는 경우는 v-1로 정해져 있다. 따라서 벨만 포드에서 v-1번 검사한 후 최단 거리가 얻어지는 데 음수 사이클이 있는 경우 그 이후에도 사이클을 거쳐 최단 거리가 갱신 된다. 이를 이용하여 v-1번 돌고 한번 더 돌아서 갱신이 되는 지 확인한 후 갱신이 된다면 음수 사이클이 발생한다는 것을 확인할 수 있을 것이다.
+아래 예시에서 1->2 거리는 3이다. 하지만 2->3->2 사이클을 거치면 -2가 감소한 1이 되며 한번 더 사이클을 거치면 -1이 되어 거리값이 무한정으로 감소한다. 이를 파악하는 과정은 생각보다 쉽다. V개의 정점이 있을 때 임의의 정점에서 임의의 정점으로 가장 많이 거쳐 가는 경우는 v-1로 정해져 있다. 따라서 벨만 포드에서 v-1번 검사한 후 최단 거리가 얻어지는 데 음수 사이클이 있는 경우 그 이후에도 사이클을 거쳐 최단 거리가 갱신 된다. 이를 이용하여 v-1번 돌고 한번 더 돌아서 갱신이 되는 지 확인한 후 갱신이 된다면 음수 사이클이 발생한다는 것을 확인할 수 있을 것이다.
 ![Alt text](image-5.png)
 
 
@@ -442,8 +442,15 @@ int main(void) {
 
 정점 2는 v-1번 조사한 후에도 최단 거리값이 감소하므로 이는 음수 사이클이 존재한다고 할 수 있다.
 
-## 존슨 알고리즘
+### 존슨 알고리즘
+존슨 알고리즘에서는 전체 에지 가중치를 음수가 아닌 형태로 변환한다. 이때 벨만포드알고리즘과 수학 논리를 결합하여 이루어진다. 
 
+
+### 존슨 알고리즘으로 최단거리를 찾는 과정 
+존슨 알고리즘의 과정은 단순하다.
+1. 더미 정점을 추가한다. 이 더미정점과 모든 정점은 연결되어 있으며 가중치는 0이다. 최단 거리표를 작성할 때 시작정점으로 가는 거리는 0으로 초기화 한다.
+2. 벨만 포드 알고리즘을 이용하여 더미 정점과 나머지 정점들 사이의 최단 경로를 찾는다.
+3. 이를 이용하여 양수 가중치로 변경하고 시작 정점에서 다익스트라 알고리즘을 적용한다.
 ### 초기 상태
 ![Alt text](image-6.png)
 
@@ -460,14 +467,8 @@ int main(void) {
    다익스트라는 가중치가 음수인 경우에 돌아가지 않음
    벨만 포드 알고리즘은 가중치가 음수인 경우에 돌아감
 
-   그렇다면 음수 가중치를 갖는 그래프를 양수 가중치로 변환하여 다익스트라 알고리즘 쓰면 효율적이지 않을까 라는 생각을 함
-
    존슨 알고리즘
    존슨 알고리즘에서는 전체 에지 가중치를 음수가 아닌 형태로 변환한다. 이때 벨만포드알고리즘과 수학 논리를 결합하여 이루어진다.
-
-   1. 더미 정점을 추가한다. 이 더미정점과 모든 정점은 연결되어 있으며 가중치는 0이다.
-   2. 벨만 포드 알고리즘을 이용하여 더미 정점과 나머지 정점들 사이의 최단 경로를 찾는다.
-   3. 이를 이용하여 양수 가중치로 변경하고 다익스트라 알고리즘을 적용한다?
 */
 
 
@@ -495,8 +496,8 @@ public:
 
 std::vector<int> bellmanFord(Graph& g, int st) {
    std::vector<int> distance(g.size, std::numeric_limits<int>::max());
-   distance[0] = 0;
-   distance[st] = 0; 
+   distance[0] = 0; ///더미 정점 추가하기
+   distance[st] = 0; ///더미 정점과 시작정점까지 최단거리는 0으로 초기화한다.
    for(int j = 0; j < g.size; j++) {
       for(int i = 1; i < g.size; i++) {
          for(auto& e : g.G[i]) {
@@ -507,10 +508,11 @@ std::vector<int> bellmanFord(Graph& g, int st) {
             }
          }
       }
-   }
+   } ///벨만 포드 알고리즘 적용
 
    bool isCycled = false;
 
+   ///사이클 파악
    for(int i = 0; i < g.size - 1; i++) {
       for(auto& e : g.G[i]) {
          if(distance[i] != std::numeric_limits<int>::max() &&
@@ -570,6 +572,7 @@ void Johnson(Graph& g) {
 
    std::vector<int> sht = dijkstra(g1.size, 1, g1);
 
+   ///작성된 최단거리표에서 더미정점으로 부터 구한 최단거리표의 값들을 더해주면서 양수로 변환했던 가중치를 음수로 변환한다.
    for(int i = 1; i < g1.size; i++) {
       printf("%d %d\n", i, sht[i] + distance1[i]);
    }
@@ -793,3 +796,123 @@ int main(void) {
 
 ### 출력
 ![Alt text](image-8.png)
+
+### 실습문제 15번 욕심쟁이 로봇
+벨만포드 알고리즘을 사용하면 쉽게 답을 구할 수 있다. 음의 가중치가 있고 양의 가중치도 있는 상태에서 가중치의 합이 최대가 되게 하는 것이다. 이를 다르게 표현하면 벨만포드알고리즘에서 최장거리를 구하면 되는 것이다.
+
+따라서 기존의 벨만포드에서 최단거리표가아닌 최장거리표로 작성한 뒤 모든 값을 -무한대 로 지정한다. 이 후에 벨만포드 알고리즘을 적용하는데 최장거리표를 업데이트하는 기준에 대해서 기존의 방식과 다른 방식으로 해야하며 최장거리표에 작성된 값과 가중치의 합이 인접한 정점의 최장거리표 값보다 큰 경우에 최장거리표를 업데이트 하도록 하는것이 핵심이다.
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <list>
+#include <numeric>
+
+class Edge {
+public:
+   int dst;
+   int weight;
+
+   Edge(int d, int w) : dst(d), weight(w) {}
+};
+
+class Graph {
+public:
+   int size;
+   std::vector<std::list<Edge>> G;
+
+   Graph(int s) : size(s) {
+      G.resize(s);
+   }
+
+   void addEdge(int s, int d, int w) {
+      G[s].push_back(Edge(d, w));
+   }
+};
+
+void bellmanFord(Graph& g) {
+   std::vector<int> distance(g.size, std::numeric_limits<int>::min());
+   distance[0] = 0;
+   for(int j = 0; j < g.size - 1; j++) {
+      for(int i = 0; i < g.size; i++) {
+         for(auto& e : g.G[i]) {
+            if(distance[i] != std::numeric_limits<int>::min() &&
+               distance[i] + e.weight > distance[e.dst]
+            ) {
+               distance[e.dst] = distance[i] + e.weight;
+            }
+         }
+      }
+   }
+
+   bool isCycled = false;
+
+   for(int i = 0; i < g.size; i++) {
+      for(auto& e : g.G[i]) {
+         if(distance[i] != std::numeric_limits<int>::min() &&
+            distance[i] + e.weight > distance[e.dst]
+         ) {
+            isCycled = true;
+            break;
+         }
+      }
+      if(isCycled) {
+         break;
+      }
+   }
+   
+   if(isCycled) {
+      std::cout << "탐색 중단";
+   } else {
+      std::cout << distance[g.size - 1];
+   }
+   
+   
+}
+
+int main(void) {
+   using namespace std;
+
+   int N; ///가로 세로 길이
+   string tmp;
+   int tw;
+
+   cin >> N;
+
+   Graph g(N * N);
+
+   
+   
+   for(int i = 0; i < N * N - 1; i++) {
+      cin >> tmp >> tw;
+      
+      while(tmp != "") {
+         switch(tmp.back()) {
+            case 'N':
+               g.addEdge(i, i - N, tw);
+               break;
+            case 'S':
+               g.addEdge(i, i + N, tw);
+               break;
+            case 'E':
+               g.addEdge(i, i + 1, tw);
+               break;
+            case 'W':
+               g.addEdge(i, i - 1, tw);
+               break;
+         }
+         tmp.pop_back();
+      }
+   }
+
+   bellmanFord(g);
+
+
+   return 0;
+}
+```
+
+여러 테스트 케이스를 거쳐 검증하였다.
+![Alt text](image-9.png)
+![Alt text](image-10.png)
+![Alt text](image-11.png)
