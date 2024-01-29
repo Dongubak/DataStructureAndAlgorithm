@@ -647,5 +647,149 @@ int main(void) {
 }
 ```
 
+## kosaraju 알고리즘
+
+### 연결요소
+여러 연결 요소로 구성된 그래프들이 존재할 것이다.
+이때 연결요소끼리 이동이 불가능한 경우가 있을 수도 있고 연결요소들끼리 이동이 가능할 수도 있다. 우리는 연결요소들끼리 즉 부분그래프들 사이에 이동하는 경로가 존재하면 식별하여 부분그래프들의 집합을 코사라주 알고리즘을 통해서 얻을 수 있다.
 
 ![Alt text](image-7.png)
+
+위 그림에서 1번 정점은 하나의 연결 요소인 것이다.
+2번정점도 하나의 연결 요소이며 3번 5번 6번 7번 정점으로 그려지는 부분그래프도 하나의 연결요소이며 4번 8번 9번도 하나의 연결요소이다. 이들의 연결요소들끼리는 이동이 가능하며 이때 부분그래프들을 강한 연결요소라고 한다.
+
+### 코사라주 알고리즘의 강한연결요소를 찾는 과정
+1. DFS를 진행하여 방문한 정점들을 순서대로 스택에 넣는다.
+2. 그래프의 간선의 방향을 모두 역전시킨다
+3. 스택에서 정점을 하나씩 팝하여 역전한 그래프에 대해 DFS를 진행한다.(스택의 탑에 위치한 정점은 마지막에 방문한 정점이다)
+
+### 그래프를 전치하는 과정
+그래프의 인접정점을 순회하면서 각 간선에 대해 dst와 src를 반대로하여 그래프를 생성하면 된다.
+
+코드는 다음과 같다.
+```cpp
+Graph transp() {
+        Graph ret(size);
+        for (int i = 1; i < size; i++) {
+            for (auto& adj : G[i]) {
+                ret.addEdge(adj.dst, i, adj.weight);
+            }
+        }
+        return ret;
+    }
+```
+
+### 코사라주 알고리즘 구현
+```cpp
+#include <cstdio>
+#include <vector>
+#include <stack>
+#include <list>
+
+class Edge {
+public:
+    int dst;
+    int weight;
+
+    Edge(int d, int w) : dst(d), weight(w) {}
+};
+
+class Graph {
+public:
+    std::vector<std::list<Edge>> G;
+    int size;
+
+    Graph(int s) : size(s) {
+        G.resize(s);
+    }
+
+    void addEdge(int s, int d, int w) {
+        G[s].push_back(Edge(d, w));
+    }
+
+    Graph transp() {
+        Graph ret(size);
+        for (int i = 1; i < size; i++) {
+            for (auto& adj : G[i]) {
+                ret.addEdge(adj.dst, i, adj.weight);
+            }
+        }
+        return ret;
+    }
+};
+
+///stack을 기록할 때 사용하는 DFS
+void DFS_Recursive(Graph& g, int v, std::vector<int>& visited, std::stack<int>& st) {
+    visited[v] = 1;
+    for(auto& e: g.G[v]) {
+        if(visited[e.dst] == 0) {
+            DFS_Recursive(g, e.dst, visited, st);
+        }
+    }
+    st.push(v);
+}
+
+///역전된 그래프를 DFS
+void DFS_Recursive(Graph& g, int v, std::vector<int>& visited) {
+    visited[v] = 1;
+    printf("%d\n", v);
+    for(auto& e: g.G[v]) {
+        if(visited[e.dst] == 0) {
+            DFS_Recursive(g, e.dst, visited);
+        }
+    }
+}
+
+std::stack<int> DFS(Graph& g) {
+    std::stack<int> st;
+    std::vector<int> visited(g.size, 0);
+    DFS_Recursive(g, 1, visited, st);
+
+    return st;
+}
+
+///입력 받은 정점에 대해서만 DFS진행
+void DFS(Graph& g, int v) {
+    std::vector<int> visited(g.size, 0);
+    DFS_Recursive(g, v, visited);
+}
+
+void kosaraju(std::stack<int> seq, Graph& tr_g) {
+    std::vector<int> visited(tr_g.size, 0);
+    
+    while(!seq.empty()) {
+        if(visited[seq.top()] == 0) {
+            DFS_Recursive(tr_g, seq.top(), visited);
+            printf("------\n");
+        }
+        seq.pop();
+    }
+}
+
+int main(void) {
+    using namespace std;
+    int vn, en;
+
+    scanf("%d %d", &vn, &en);
+
+    Graph g(vn + 1);
+
+    int st, dst, weight;
+    for (int i = 0; i < en; i++) {
+        scanf("%d %d %d", &st, &dst, &weight);
+        g.addEdge(st, dst, weight);
+    }
+
+    Graph tr_g = g.transp();
+
+    std::stack<int> seq = DFS(g);
+
+    kosaraju(seq, tr_g);
+
+    return 0;
+}
+
+```
+
+### 출력
+![Alt text](image-8.png)
