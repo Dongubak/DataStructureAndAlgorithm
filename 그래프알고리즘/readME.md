@@ -934,9 +934,18 @@ int main(void) {
 ```
 
 여러 테스트 케이스를 거쳐 검증하였다.
+
+<hr>
+
+
 ![Alt text](image-9.png)
-![Alt text](image-10.png)ß
+
+
+![Alt text](image-10.png)
+
+
 ![Alt text](image-11.png)
+
 
 
 ### 🛸 미로-순간이동 게임
@@ -1142,6 +1151,14 @@ int main(void) {
 }
 ```
 ### 교재에 있는 테스트 케이스 적용
+
+<hr>
+
 ![Alt text](image-14.png)
+
+
 ![Alt text](image-15.png)
+
+
 ![Alt text](image-16.png)
+
