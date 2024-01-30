@@ -77,9 +77,15 @@ void DFS_for_SCC(Graph& g, std::stack<int>& seq) {
       if(visited[seq.top()] == 0) {
          DFS_for_SCC_recursive(g, visited, seq.top(), cc);
       }
-      
 
-      
+      if(!cc.empty()) {
+         for(auto& a: cc) {
+            printf("%d ", a);
+         }
+
+         printf("\n");
+      }
+
       seq.pop();
    }
 }

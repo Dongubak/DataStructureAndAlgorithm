@@ -720,103 +720,112 @@ public:
 
 class Graph {
 public:
-    std::vector<std::list<Edge>> G;
-    int size;
+   std::vector<std::list<Edge>> G;
+   int size;
 
-    Graph(int s) : size(s) {
-        G.resize(s);
-    }
+   Graph(int s) : size(s) {
+      G.resize(s);
+   }
 
-    void addEdge(int s, int d, int w) {
-        G[s].push_back(Edge(d, w));
-    }
+   void addEdge(int s, int d, int w) {
+      G[s].push_back(Edge(d, w));
+   }
 
-    Graph transp() {
-        Graph ret(size);
-        for (int i = 1; i < size; i++) {
-            for (auto& adj : G[i]) {
-                ret.addEdge(adj.dst, i, adj.weight);
-            }
-        }
-        return ret;
-    }
+   Graph transp() {
+      Graph ret(size);
+      for (int i = 1; i < size; i++) {
+         for (auto& adj : G[i]) {
+               ret.addEdge(adj.dst, i, adj.weight);
+         }
+      }
+      return ret;
+   }
 };
 
-///stack을 기록할 때 사용하는 DFS
-void DFS_Recursive(Graph& g, int v, std::vector<int>& visited, std::stack<int>& st) {
-    visited[v] = 1;
-    for(auto& e: g.G[v]) {
-        if(visited[e.dst] == 0) {
-            DFS_Recursive(g, e.dst, visited, st);
-        }
-    }
-    st.push(v);
+void DFS_for_seq_recursive(Graph& g, std::stack<int>& seq, std::vector<int>& visited, int cur) {
+   visited[cur] = 1;
+
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, e.dst);
+      }
+   }
+   seq.push(cur);
 }
 
-///역전된 그래프를 DFS
-void DFS_Recursive(Graph& g, int v, std::vector<int>& visited) {
-    visited[v] = 1;
-    printf("%d\n", v);
-    for(auto& e: g.G[v]) {
-        if(visited[e.dst] == 0) {
-            DFS_Recursive(g, e.dst, visited);
-        }
-    }
+std::stack<int> DFS_for_seq(Graph& g) {
+   std::vector<int> visited(g.size, 0);
+   std::stack<int> seq;
+   for(int i = 1; i < g.size; i++) {
+      if(visited[i] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, i);
+      }
+   }
+
+   return seq;
 }
 
-std::stack<int> DFS(Graph& g) {
-    std::stack<int> st;
-    std::vector<int> visited(g.size, 0);
-    DFS_Recursive(g, 1, visited, st);
+void DFS_for_SCC_recursive(Graph& g, std::vector<int>& visited, int cur, std::vector<int>& cc) {
+   visited[cur] = 1;
+   cc.push_back(cur);
 
-    return st;
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_SCC_recursive(g, visited, e.dst, cc);
+      }
+   }
 }
 
-///입력 받은 정점에 대해서만 DFS진행
-void DFS(Graph& g, int v) {
-    std::vector<int> visited(g.size, 0);
-    DFS_Recursive(g, v, visited);
+void DFS_for_SCC(Graph& g, std::stack<int>& seq) {
+   std::vector<int> visited(g.size, 0);
+
+   while(!seq.empty()) {
+      std::vector<int> cc;
+      if(visited[seq.top()] == 0) {
+         DFS_for_SCC_recursive(g, visited, seq.top(), cc);
+      }
+
+      if(!cc.empty()) {
+         for(auto& a: cc) {
+            printf("%d ", a);
+         }
+
+         printf("\n");
+      }
+
+      seq.pop();
+   }
 }
 
-void kosaraju(std::stack<int> seq, Graph& tr_g) {
-    std::vector<int> visited(tr_g.size, 0);
-    
-    while(!seq.empty()) {
-        if(visited[seq.top()] == 0) {
-            DFS_Recursive(tr_g, seq.top(), visited);
-            printf("------\n");
-        }
-        seq.pop();
-    }
+void kosaraju(Graph& g) {
+   std::stack<int> seq = DFS_for_seq(g);
+   Graph tranp = g.transp();
+   DFS_for_SCC(tranp, seq);
 }
 
 int main(void) {
-    using namespace std;
-    int vn, en;
+   using namespace std;
+   int vn, en;
 
-    scanf("%d %d", &vn, &en);
+   scanf("%d %d", &vn, &en);
 
-    Graph g(vn + 1);
+   Graph g(vn + 1);
 
-    int st, dst, weight;
-    for (int i = 0; i < en; i++) {
-        scanf("%d %d %d", &st, &dst, &weight);
-        g.addEdge(st, dst, weight);
-    }
+   int st, dst, weight;
+   for (int i = 0; i < en; i++) {
+      scanf("%d %d %d", &st, &dst, &weight);
+      g.addEdge(st, dst, weight);
+   }
 
-    Graph tr_g = g.transp();
+   kosaraju(g);
 
-    std::stack<int> seq = DFS(g);
 
-    kosaraju(seq, tr_g);
-
-    return 0;
+   return 0;
 }
-
 ```
 
 ### 출력
-![Alt text](image-8.png)
+![Alt text](image-17.png)
 
 ### 🤖 실습문제 15번 욕심쟁이 로봇
 벨만포드 알고리즘을 사용하면 쉽게 답을 구할 수 있다. 음의 가중치가 있고 양의 가중치도 있는 상태에서 가중치의 합이 최대가 되게 하는 것이다. 이를 다르게 표현하면 벨만포드알고리즘에서 최장거리를 구하면 되는 것이다.
