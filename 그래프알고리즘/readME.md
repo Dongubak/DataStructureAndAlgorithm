@@ -83,7 +83,7 @@ int main(void) {
    return 0;
 }
 ```
-![Alt text](image.png)
+![Alt text](./img/image.png)
 
 
 ### 🌪️ 다익스트라 알고리즘을 우선순위 큐를 이용하여 최적화 하기
@@ -170,7 +170,7 @@ int main() {
    return 0;
 }
 ```
-![Alt text](image-1.png)
+![Alt text](./img/image-1.png)
 
 ```cpp
 dijkstra(vn, st, G):
@@ -209,7 +209,7 @@ dijkstra(vn, st, G):
 
 이 예시에서 각 정점에 대해서 최적의 경로를 골라 그리디 방식으로 검색할 경우
 
-![Alt text](image-3.png)
+![Alt text](./img/image-3.png)
 1. 1번 정점에서 2번정점으로 이동하여 기록한다.
 2. 2번 정점에서 3번과 4번으로 이동하여 기록한다.
 3. 3번에서 5번으로 이동하여 4번에서 3번으로 이동하지 않는다. (이미 최적의 경로가 설정되었다고 가정하여 검사하지 않는다.)
@@ -317,11 +317,11 @@ int main(void) {
 ```
 ### 출력
 
-![Alt text](image-4.png)
+![Alt text](./img/image-4.png)
 
 ### ☠️ 음수 사이클
 아래 예시에서 1->2 거리는 3이다. 하지만 2->3->2 사이클을 거치면 -2가 감소한 1이 되며 한번 더 사이클을 거치면 -1이 되어 거리값이 무한정으로 감소한다. 이를 파악하는 과정은 생각보다 쉽다. V개의 정점이 있을 때 임의의 정점에서 임의의 정점으로 가장 많이 거쳐 가는 경우는 v-1로 정해져 있다. 따라서 벨만 포드에서 v-1번 검사한 후 최단 거리가 얻어지는 데 음수 사이클이 있는 경우 그 이후에도 사이클을 거쳐 최단 거리가 갱신 된다. 이를 이용하여 v-1번 돌고 한번 더 돌아서 갱신이 되는 지 확인한 후 갱신이 된다면 음수 사이클이 발생한다는 것을 확인할 수 있을 것이다.
-![Alt text](image-5.png)
+![Alt text](./img/image-5.png)
 
 
 
@@ -434,11 +434,11 @@ int main(void) {
 }
 ```
 첫번째 그래프
-![Alt text](image-3.png)
+![Alt text](./img/image-3.png)
 이 그래프에서는 최단 거리값이 v-1번 조사한 후에 변함이 없으므로 음수 사이클이 존재하지 않는다.
 
 두번째 그래프
-![Alt text](image-5.png)
+![Alt text](./img/image-5.png)
 
 정점 2는 v-1번 조사한 후에도 최단 거리값이 감소하므로 이는 음수 사이클이 존재한다고 할 수 있다.
 
@@ -452,7 +452,7 @@ int main(void) {
 2. 벨만 포드 알고리즘을 이용하여 더미 정점과 나머지 정점들 사이의 최단 경로를 찾는다.
 3. 이를 이용하여 양수 가중치로 변경하고 시작 정점에서 다익스트라 알고리즘을 적용한다.
 ### 😢 초기 상태
-![Alt text](image-13.png)
+![Alt text](./img/image-13.png)
 
 <table>
    <tr>
@@ -825,7 +825,7 @@ int main(void) {
 ```
 
 ### 출력
-![Alt text](image-17.png)
+![Alt text](./img/image-17.png)
 
 ### 🤖 실습문제 15번 욕심쟁이 로봇
 벨만포드 알고리즘을 사용하면 쉽게 답을 구할 수 있다. 음의 가중치가 있고 양의 가중치도 있는 상태에서 가중치의 합이 최대가 되게 하는 것이다. 이를 다르게 표현하면 벨만포드알고리즘에서 최장거리를 구하면 되는 것이다.
@@ -947,13 +947,13 @@ int main(void) {
 <hr>
 
 
-![Alt text](image-9.png)
+![Alt text](./img/image-9.png)
 
 
-![Alt text](image-10.png)
+![Alt text](./img/image-10.png)
 
 
-![Alt text](image-11.png)
+![Alt text](./img/image-11.png)
 
 
 
@@ -1163,11 +1163,11 @@ int main(void) {
 
 <hr>
 
-![Alt text](image-14.png)
+![Alt text](./img/image-14.png)
 
 
-![Alt text](image-15.png)
+![Alt text](./img/image-15.png)
 
 
-![Alt text](image-16.png)
+![Alt text](./img/image-16.png)
 
