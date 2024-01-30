@@ -38,6 +38,10 @@ void bellmanFord(Graph& g) {
             }
          }
       }
+
+      for(int i = 1; i < g.size; i++) {
+         printf("%d : %d\n", i, distance[i]);
+      }
    }
 
    bool isCycled = false;
@@ -78,6 +82,7 @@ int main(void) {
 
    bellmanFord(g1);
 
+   printf("----\n");
    Graph g2(7);
    g2.addEdge(1, 2, 3);
    g2.addEdge(2, 4, -8);

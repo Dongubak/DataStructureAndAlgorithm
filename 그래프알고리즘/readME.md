@@ -442,20 +442,41 @@ int main(void) {
 
 정점 2는 v-1번 조사한 후에도 최단 거리값이 감소하므로 이는 음수 사이클이 존재한다고 할 수 있다.
 
-### 존슨 알고리즘
+### 😱 존슨 알고리즘
 존슨 알고리즘에서는 전체 에지 가중치를 음수가 아닌 형태로 변환한다. 이때 벨만포드알고리즘과 수학 논리를 결합하여 이루어진다. 
 
 
-### 존슨 알고리즘으로 최단거리를 찾는 과정 
+### 🤑 존슨 알고리즘으로 최단거리를 찾는 과정 
 존슨 알고리즘의 과정은 단순하다.
 1. 더미 정점을 추가한다. 이 더미정점과 모든 정점은 연결되어 있으며 가중치는 0이다. 최단 거리표를 작성할 때 시작정점으로 가는 거리는 0으로 초기화 한다.
 2. 벨만 포드 알고리즘을 이용하여 더미 정점과 나머지 정점들 사이의 최단 경로를 찾는다.
 3. 이를 이용하여 양수 가중치로 변경하고 시작 정점에서 다익스트라 알고리즘을 적용한다.
-### 초기 상태
-![Alt text](image-6.png)
+### 😢 초기 상태
+![Alt text](image-13.png)
+
+<table>
+   <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+   </tr>
+   <tr>
+      <td>0</td>
+      <td>inf</td>
+      <td>inf</td>
+      <td>inf</td>
+      <td>inf</td>
+      <td>0</td>
+   </tr>
+</table>
 
 
-### 코드
+그림에서 5는 더미 정점이며 5에서 각 정점으로 가는 가중치값은 0이고 최단거리표에 작성된 값들은 시작정점을 제외하여 무한대로 설정하고 시작정점으로 가는 최단거리는 0으로 설정한다.
+
+### 😇 코드
 ```cpp
 #include <cstdio>
 #include <vector>
@@ -650,9 +671,9 @@ int main(void) {
 }
 ```
 
-## kosaraju 알고리즘
+## 🫣 kosaraju 알고리즘
 
-### 연결요소
+### 🪡 연결요소
 여러 연결 요소로 구성된 그래프들이 존재할 것이다.
 이때 연결요소끼리 이동이 불가능한 경우가 있을 수도 있고 연결요소들끼리 이동이 가능할 수도 있다. 우리는 연결요소들끼리 즉 부분그래프들 사이에 이동하는 경로가 존재하면 식별하여 부분그래프들의 집합을 코사라주 알고리즘을 통해서 얻을 수 있다.
 
@@ -661,12 +682,12 @@ int main(void) {
 위 그림에서 1번 정점은 하나의 연결 요소인 것이다.
 2번정점도 하나의 연결 요소이며 3번 5번 6번 7번 정점으로 그려지는 부분그래프도 하나의 연결요소이며 4번 8번 9번도 하나의 연결요소이다. 이들의 연결요소들끼리는 이동이 가능하며 이때 부분그래프들을 강한 연결요소라고 한다.
 
-### 코사라주 알고리즘의 강한연결요소를 찾는 과정
+### 🤖 코사라주 알고리즘의 강한연결요소를 찾는 과정
 1. DFS를 진행하여 방문한 정점들을 순서대로 스택에 넣는다.
 2. 그래프의 간선의 방향을 모두 역전시킨다
 3. 스택에서 정점을 하나씩 팝하여 역전한 그래프에 대해 DFS를 진행한다.(스택의 탑에 위치한 정점은 마지막에 방문한 정점이다)
 
-### 그래프를 전치하는 과정
+### ⚽ 그래프를 전치하는 과정
 그래프의 인접정점을 순회하면서 각 간선에 대해 dst와 src를 반대로하여 그래프를 생성하면 된다.
 
 코드는 다음과 같다.
@@ -682,7 +703,7 @@ Graph transp() {
     }
 ```
 
-### 코사라주 알고리즘 구현
+### 🪀 코사라주 알고리즘 구현
 ```cpp
 #include <cstdio>
 #include <vector>
@@ -797,7 +818,7 @@ int main(void) {
 ### 출력
 ![Alt text](image-8.png)
 
-### 실습문제 15번 욕심쟁이 로봇
+### 🤖 실습문제 15번 욕심쟁이 로봇
 벨만포드 알고리즘을 사용하면 쉽게 답을 구할 수 있다. 음의 가중치가 있고 양의 가중치도 있는 상태에서 가중치의 합이 최대가 되게 하는 것이다. 이를 다르게 표현하면 벨만포드알고리즘에서 최장거리를 구하면 되는 것이다.
 
 따라서 기존의 벨만포드에서 최단거리표가아닌 최장거리표로 작성한 뒤 모든 값을 -무한대 로 지정한다. 이 후에 벨만포드 알고리즘을 적용하는데 최장거리표를 업데이트하는 기준에 대해서 기존의 방식과 다른 방식으로 해야하며 최장거리표에 작성된 값과 가중치의 합이 인접한 정점의 최장거리표 값보다 큰 경우에 최장거리표를 업데이트 하도록 하는것이 핵심이다.
@@ -914,12 +935,11 @@ int main(void) {
 
 여러 테스트 케이스를 거쳐 검증하였다.
 ![Alt text](image-9.png)
-![Alt text](image-10.png)
+![Alt text](image-10.png)ß
 ![Alt text](image-11.png)
 
 
-### 미로-순간이동 게임
-prototype
+### 🛸 미로-순간이동 게임
 ```cpp
 #include <cstdio>
 #include <vector>
@@ -961,6 +981,81 @@ public:
    }
 };
 
+void DFS_for_seq_recursive(Graph& g, std::stack<int>& seq, std::vector<int>& visited, int cur) {
+   visited[cur] = 1;
+
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, e.dst);
+      }
+   }
+   seq.push(cur);
+}
+
+std::stack<int> DFS_for_seq(Graph& g) {
+   std::vector<int> visited(g.size, 0);
+   std::stack<int> seq;
+   for(int i = 0; i < g.size; i++) {
+      if(visited[i] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, i);
+      }
+   }
+
+   return seq;
+}
+
+void DFS_for_SCC_recursive(Graph& g, std::vector<int>& visited, int cur, std::vector<int>& cc) {
+   visited[cur] = 1;
+   cc.push_back(cur);
+
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_SCC_recursive(g, visited, e.dst, cc);
+      }
+   }
+}
+
+void DFS_for_SCC(Graph& g, std::stack<int>& seq) {
+   std::vector<int> visited(g.size, 0);
+
+   while(!seq.empty()) {
+      std::vector<int> cc;
+      if(visited[seq.top()] == 0) {
+         DFS_for_SCC_recursive(g, visited, seq.top(), cc);
+      }
+
+      bool isWC = true;
+
+      Graph tranp = g.transp(); ///원본 그래프
+      for(auto& a: cc) {
+         for(auto& e: tranp.G[a]) {
+            if(std::find(cc.begin(), cc.end(), e.dst) == cc.end()) {
+               isWC = false;
+               break;
+            }
+         }
+
+         if(!isWC) {
+            break;
+         }
+      }
+
+      if(isWC && !cc.empty()) {
+         for(auto& a: cc) {
+            printf("%d ", a);
+         }
+         printf("\n");
+      }
+      
+      seq.pop();
+   }
+}
+
+void kosaraju(Graph& g) {
+   std::stack<int> seq = DFS_for_seq(g);
+   Graph tranp = g.transp();
+   DFS_for_SCC(tranp, seq);
+}
 
 void mazeRunner(Graph& g) {
    bool isCycled = false;
@@ -1016,6 +1111,8 @@ void mazeRunner(Graph& g) {
       }
    }
 
+   kosaraju(g);
+
 }
 
 int main(void) {
@@ -1044,3 +1141,7 @@ int main(void) {
    return 0;
 }
 ```
+### 교재에 있는 테스트 케이스 적용
+![Alt text](image-14.png)
+![Alt text](image-15.png)
+![Alt text](image-16.png)

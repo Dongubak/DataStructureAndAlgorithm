@@ -82,6 +82,7 @@ std::vector<int> dijkstra(int vn, int st, const Graph& g) {
 
    return sht;
 }
+
 void Johnson(Graph& g) {
    Graph g1 = g;
    Graph g2 = g;

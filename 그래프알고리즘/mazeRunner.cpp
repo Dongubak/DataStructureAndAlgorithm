@@ -38,6 +38,81 @@ public:
    }
 };
 
+void DFS_for_seq_recursive(Graph& g, std::stack<int>& seq, std::vector<int>& visited, int cur) {
+   visited[cur] = 1;
+
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, e.dst);
+      }
+   }
+   seq.push(cur);
+}
+
+std::stack<int> DFS_for_seq(Graph& g) {
+   std::vector<int> visited(g.size, 0);
+   std::stack<int> seq;
+   for(int i = 0; i < g.size; i++) {
+      if(visited[i] == 0) {
+         DFS_for_seq_recursive(g, seq, visited, i);
+      }
+   }
+
+   return seq;
+}
+
+void DFS_for_SCC_recursive(Graph& g, std::vector<int>& visited, int cur, std::vector<int>& cc) {
+   visited[cur] = 1;
+   cc.push_back(cur);
+
+   for(auto& e: g.G[cur]) {
+      if(visited[e.dst] == 0) {
+         DFS_for_SCC_recursive(g, visited, e.dst, cc);
+      }
+   }
+}
+
+void DFS_for_SCC(Graph& g, std::stack<int>& seq) {
+   std::vector<int> visited(g.size, 0);
+
+   while(!seq.empty()) {
+      std::vector<int> cc;
+      if(visited[seq.top()] == 0) {
+         DFS_for_SCC_recursive(g, visited, seq.top(), cc);
+      }
+
+      bool isWC = true;
+
+      Graph tranp = g.transp(); ///원본 그래프
+      for(auto& a: cc) {
+         for(auto& e: tranp.G[a]) {
+            if(std::find(cc.begin(), cc.end(), e.dst) == cc.end()) {
+               isWC = false;
+               break;
+            }
+         }
+
+         if(!isWC) {
+            break;
+         }
+      }
+
+      if(isWC && !cc.empty()) {
+         for(auto& a: cc) {
+            printf("%d ", a);
+         }
+         printf("\n");
+      }
+      
+      seq.pop();
+   }
+}
+
+void kosaraju(Graph& g) {
+   std::stack<int> seq = DFS_for_seq(g);
+   Graph tranp = g.transp();
+   DFS_for_SCC(tranp, seq);
+}
 
 void mazeRunner(Graph& g) {
    bool isCycled = false;
@@ -92,6 +167,8 @@ void mazeRunner(Graph& g) {
          printf("%d: %d\n", i, score[i]);
       }
    }
+
+   kosaraju(g);
 
 }
 
