@@ -1,0 +1,1 @@
+{"name":"Local: tabulation","url":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/dynamicProgramming/tabulation.cpp","tests":[{"id":1707129847362,"input":"5 0\n-7 -3 -2 5 8","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/dynamicProgramming/tabulation.cpp","group":"local","local":true}
