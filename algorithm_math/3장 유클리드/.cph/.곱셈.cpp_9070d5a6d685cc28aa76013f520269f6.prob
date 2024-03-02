@@ -1,0 +1,1 @@
+{"name":"Local: 곱셈","url":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/algorithm_math/3장 유클리드/곱셈.cpp","tests":[{"id":1708949502785,"input":"5\n3 1 4 1 5\n9 2 6 5 3","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/khj/Documents/GitHub/DataStructureAndAlgorithm/algorithm_math/3장 유클리드/곱셈.cpp","group":"local","local":true}
