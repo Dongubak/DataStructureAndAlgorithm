@@ -891,4 +891,224 @@ int main(void) {
 ```
 ![Alt text](image-26.png)
 
+4.6.3 공비가 4인 수열의 합을 1000000007로 나눈 나머지를 구하라
+
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000007;
+
+long long pow_m(long long a, long long b) {
+    long long result = 1;
+    while (b > 0) {
+        if (b % 2 == 1)
+            result = (result * a) % MOD;
+        a = (a * a) % MOD;
+        b /= 2;
+    }
+    return result;
+}
+
+int main(void) {
+   int N;
+
+   cin >> N;
+
+   long long ans = ((pow_m(4, N + 1) - 1) * pow_m(3, MOD - 2)) % MOD;
+
+   cout << ans;
+
+
+   return 0;
+}
+```
+
+![Alt text](image-36.png)
+
+![Alt text](image-37.png)
+
+
+피보나치 수열의 9번째 자리수까지 구하기(행렬 이용)
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000000;
+
+struct MAT {
+   long long a[2][2];
+
+   MAT(long long a11, long long a12, long long a21, long long a22) {
+      a[0][0] = a11;
+      a[0][1] = a12;
+      a[1][0] = a21;
+      a[1][1] = a22;
+   }
+
+   MAT operator*(MAT m) {
+      long long c[2][2] = {{0, 0}, {0, 0}};
+
+      for(int i = 0; i < 2; i++) {
+         for(int j = 0; j < 2; j++) {
+            for(int k = 0; k < 2; k++) {
+               c[i][j] += (a[i][k] * m.a[k][j]) % MOD;
+               c[i][j] %= MOD;
+            }
+         }
+      }
+      return MAT(c[0][0], c[0][1], c[1][0], c[1][1]);
+   }
+};
+
+
+int main(void) {
+   MAT st = MAT(1, 1, 1, 0);
+
+   long long N;
+   cin >> N;
+   N = N - 2;
+
+   MAT p = st;
+   MAT ans = st;
+   
+   while(N > 0) {
+      if(N % 2 != 0) {
+         ans = ans * p;
+      }
+      p = p * p;
+
+      N = N >> 1;
+   }
+
+   cout << (ans.a[1][0] + ans.a[1][1]) % MOD << '\n';
+
+   return 0;
+}
+```
+![Alt text](image-38.png)
+
+
+점화식 An = 2 * An-1 + An-2에서 N번째 항을 1000000007로 나눈 나머지 구하라
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000007;
+
+struct MAT {
+   long long a[2][2];
+
+   MAT(long long a11, long long a12, long long a21, long long a22) {
+      a[0][0] = a11;
+      a[0][1] = a12;
+      a[1][0] = a21;
+      a[1][1] = a22;
+   }
+
+   MAT operator*(MAT m) {
+      long long c[2][2] = {{0, 0}, {0, 0}};
+
+      for(int i = 0; i < 2; i++) {
+         for(int j = 0; j < 2; j++) {
+            for(int k = 0; k < 2; k++) {
+               c[i][j] += (a[i][k] * m.a[k][j]) % MOD;
+               c[i][j] %= MOD;
+            }
+         }
+      }
+      return MAT(c[0][0], c[0][1], c[1][0], c[1][1]);
+   }
+};
+
+
+int main(void) {
+   MAT st = MAT(2, 1, 1, 0);
+
+   long long N;
+   cin >> N;
+   N = N - 2;
+
+   MAT p = st;
+   MAT ans = st;
+   
+   while(N > 0) {
+      if(N % 2 != 0) {
+         ans = ans * p;
+      }
+      p = p * p;
+
+      N = N >> 1;
+   }
+
+   cout << (ans.a[1][0] + ans.a[1][1]) % MOD << '\n';
+
+   return 0;
+}
+```
+
+![Alt text](image-39.png)
+
+A1 = 1, A2 = 1, A3 = 2
+An = An-1 + An-2 + An-3
+
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000007;
+
+struct MAT {
+    long long a[3][3];
+
+    MAT(long long a11, long long a12, long long a13,
+        long long a21, long long a22, long long a23,
+        long long a31, long long a32, long long a33) {
+        a[0][0] = a11; a[0][1] = a12; a[0][2] = a13;
+        a[1][0] = a21; a[1][1] = a22; a[1][2] = a23;
+        a[2][0] = a31; a[2][1] = a32; a[2][2] = a33;
+    }
+
+    MAT operator*(const MAT &m) const {
+        MAT result(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                for(int k = 0; k < 3; k++) {
+                    result.a[i][j] += (a[i][k] * m.a[k][j]) % MOD;
+                    result.a[i][j] %= MOD;
+                }
+            }
+        }
+        return result;
+    }
+};
+
+int main(void) {
+   MAT st = MAT(1, 1, 1, 1, 0, 0, 0, 1, 0);
+
+   long long N;
+   cin >> N;
+   
+   N = N - 2;
+
+   MAT p = st;
+   MAT ans = st;
+   
+   while(N > 0) {
+      if(N % 2 != 0) {
+         ans = ans * p;
+      }
+      p = p * p;
+
+      N = N >> 1;
+   }
+
+   cout << ans.a[0][0];
+
+
+   return 0;
+}
+```
+
+![Alt text](image-40.png)
 
