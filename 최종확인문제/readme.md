@@ -86,32 +86,32 @@ long long L, R;
 ```
 
 2. $L$부터 $R$까지의 수가 소수인지를 기록할 벡터를 선언한다. 원소의 개수는 $R - L + 1$개이며 참을 기본값으로 해준다.
-   ```cpp
-   vector<int> n(R - L + 1, 1);
-   ```
+```cpp
+vector<int> n(R - L + 1, 1);
+```
 
 3. $L$이 $1$인 경우 할당한 배열에서의 [0]값이 $L$의 소수여부 이므로 거짓으로 해준다.
-   ```cpp
+```cpp
+void sol(vector<int>& n, long long L, long long R) {
+if(L == 1) {
+   n[0] = 0;
+}
+```
+
+4. $2$부터 시작하여 $\sqrt{R}$까지 각 숫자의 배수를 모두 지워나가면 된다.
+```cpp
    void sol(vector<int>& n, long long L, long long R) {
    if(L == 1) {
       n[0] = 0;
    }
-   ```
 
-4. $2$부터 시작하여 $\sqrt{R}$까지 각 숫자의 배수를 모두 지워나가면 된다.
-   ```cpp
-      void sol(vector<int>& n, long long L, long long R) {
-      if(L == 1) {
-         n[0] = 0;
-      }
-
-      for(long long i = 2; i * i <= R; i++) {
-   ```
+   for(long long i = 2; i * i <= R; i++) {
+```
 
 3. $L$이상 $\sqrt{R}$의 수 중에서 가장 작은 $i$의 배수를 찾는다.
-   ```cpp
-   long long min_value = ((L + i - 1) / i) * i;
-   ```
+```cpp
+long long min_value = ((L + i - 1) / i) * i;
+```
 
    $L+i-1$은 i의 배수가 되기 직전의 수까지를 의미한다. $-1$을 하는 이유는 $L$이 이미 $i$의 배수인 경우를 처리하기 위함이다.
 
@@ -119,27 +119,27 @@ long long L, R;
    (추가설명 아래기재)
 
 4. $m$이 $i$와 같은 경우를 제외하고 $m$과 $m$의 배수들 모두를 지워나간다.
-   ```cpp
-   for(long long j = min_value; j <= R + 1; j = j + i) {
-      if(j == i) {
-         continue;
-      }
-
-      n[j - L] = 0;
+```cpp
+for(long long j = min_value; j <= R + 1; j = j + i) {
+   if(j == i) {
+      continue;
    }
-   ```
+
+   n[j - L] = 0;
+}
+```
 
 5. 카운트 후 출력
-   ```cpp
-   int c = 0;
-   for(long long i = 0; i < R - L + 1; i++) {
-      if(n[i] == 1) {
-         c++;
-      }
+```cpp
+int c = 0;
+for(long long i = 0; i < R - L + 1; i++) {
+   if(n[i] == 1) {
+      c++;
    }
+}
 
-   cout << c;
-   ```
+cout << c;
+```
 
 ### 정리
 기존의 에라토스테네스의 체 문제에서는 단순히 2부터 각 숫자의 배수들을 모두 지우면 끝나는 문제였다. 하지만 23번 문제의 경우 입력의 크기가 매우크므로 2부터 지워나갈 수 없다. 이 문제에서의 핵심 부분은 $L$보다 큰 가장 작은 $i$의 배수를 찾는 과정이 아닐까 싶다.
