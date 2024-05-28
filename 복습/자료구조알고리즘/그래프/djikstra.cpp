@@ -3,6 +3,7 @@
 #include <list>
 #include <queue>
 #include <limits>
+
 using namespace std;
 
 class Edge {
@@ -15,11 +16,11 @@ public:
 
 class Graph {
 public:
-   vector<vector<Edge>> g;
+   vector<list<Edge>> g;
    int size;
 
-   Graph(int s) : size(s) {
-      g.resize(size + 1);
+   Graph(int s) : size(s + 1) {
+      g.resize(s + 1);
    }
 
    void addEdge(int src, int dst, int weight) {
@@ -29,67 +30,73 @@ public:
 
 class Node {
 public:
-   int distance;
    int vertex;
+   int sht;
 
-   Node(int d, int v) : distance(d), vertex(v) {}
+   Node(int v, int s) : vertex(v), sht(s) {}
 
    bool operator>(const Node& other) const {
-      return distance > other.distance;
+      return sht > other.sht;
+   }
+
+   bool operator<(const Node& other) const {
+      return sht < other.sht;
    }
 };
 
-void track(int cur, int src, vector<int>& prev) {
-   if(cur != src) {
-      track(prev[cur], src, prev);
-   }
-
-   cout << cur << " ";
-}
-
-void dijkstra(const Graph& g, int st, int dst) {
-   vector<int> sht(g.size + 1, numeric_limits<int>::max());
-   vector<int> prev(g.size + 1, -1);
-
-   std::priority_queue<Node, vector<Node>, greater<Node>> pq;
+void dijstra(Graph& g, int st) {
+   vector<int> sht(g.size, numeric_limits<int>::max());
    sht[st] = 0;
-   prev[st] = 0;
 
-   pq.emplace(Node(0, st));
+   priority_queue<Node, vector<Node>, greater<Node>> pq;
+   pq.push(Node(st, 0));
 
    while(!pq.empty()) {
+      
       int cur = pq.top().vertex;
+      int we = pq.top().sht;
+
       pq.pop();
+
+      if(we != sht[cur]) {
+         continue;
+      } ///꺼낸 정점의 최단거리 값과 최단거리표의 정점의 값이 다른 경우
+
+      
 
       for(const auto& edge: g.g[cur]) {
          if(sht[cur] + edge.weight < sht[edge.dst]) {
             sht[edge.dst] = sht[cur] + edge.weight;
-            pq.emplace(Node(sht[edge.dst], edge.dst));
-            prev[edge.dst] = cur;
+            pq.emplace(Node(edge.dst, sht[edge.dst]));
          }
       }
    }
 
-   track(dst, st, prev);
-
+   for(int i = 1; i < g.size; i++) {
+      if(sht[i] == numeric_limits<int>::max()) {
+         cout << "INF" << '\n';
+      } else {
+         cout << sht[i] << '\n';
+      }
+   }
 }
 
-
 int main(void) {
-
-   int vn, en;
-   cin >> vn >> en;
+   cin.tie(NULL);
+   ios_base::sync_with_stdio(false);
+   int vn, en, st;
+   cin >> vn >> en >> st;
+   Graph g(vn);
 
    int s, d, w;
 
-   Graph g(vn);
    for(int i = 0; i < en; i++) {
       cin >> s >> d >> w;
+
       g.addEdge(s, d, w);
-      g.addEdge(d, s, w);
    }
 
-   dijkstra(g, 1, 6);
+   dijstra(g, st);
 
    return 0;
 }
